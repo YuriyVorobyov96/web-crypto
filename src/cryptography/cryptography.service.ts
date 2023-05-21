@@ -24,4 +24,12 @@ export default class CryptographyService<
   public parseKey(key: ArrayBuffer): Promise<CryptoKey> {
     return window.crypto.subtle.importKey('raw', key, this.algorithm, true, this.keyUsages);
   }
+
+  private readKey(key: CryptoKey): Promise<ArrayBuffer> {
+    return window.crypto.subtle.exportKey('raw', key);
+  }
+
+  private generateKey(): Promise<CryptoKey> {
+    return window.crypto.subtle.generateKey(this.algorithm, true, this.keyUsages);
+  }
 }

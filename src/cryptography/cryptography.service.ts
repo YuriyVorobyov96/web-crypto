@@ -6,14 +6,22 @@ export default class CryptographyService<
   T extends AesKeyGenParams | HmacKeyGenParams | Pbkdf2Params = AesKeyGenParams,
 > implements IEncryptionKeyManager, ICryptographyManager {
   public readonly algorithm: T;
-  public readonly keyUsages: Readonly<Array<KeyUsage>>;
+  public readonly keyUsages: KeyUsage[];
 
-  constructor(algorithm: T, keyUsages: Readonly<Array<KeyUsage>> = defaultKeyUsages) {
+  constructor(algorithm: T, keyUsages: KeyUsage[] = defaultKeyUsages as KeyUsage[]) {
     if (window.isSecureContext) {
       this.algorithm = algorithm;
       this.keyUsages = keyUsages;
     } else {
       throw new Error('Switch to a secure context to use Web Crypto functions');
     }
+  }
+
+  public generateInitialVector(): Uint8Array {
+    return window.crypto.getRandomValues(new Uint8Array(12));
+  }
+
+  public parseKey(key: ArrayBuffer): Promise<CryptoKey> {
+    return window.crypto.subtle.importKey('raw', key, this.algorithm, true, this.keyUsages);
   }
 }

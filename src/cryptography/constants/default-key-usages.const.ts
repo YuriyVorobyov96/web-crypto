@@ -1,3 +1,3 @@
-const defaultKeyUsages = ["encrypt", "decrypt"] as const;
+const defaultKeyUsages = ["encrypt", "decrypt"];
 
 export default defaultKeyUsages;

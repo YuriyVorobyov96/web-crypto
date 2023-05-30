@@ -7,10 +7,29 @@ const cryptographyService = new CryptographyService(AES_CGM_ALGORITHM);
 
 const base64 = 'base64-string';
 
+/*
+ * Encryption
+ */
 const { cipher, encryptionKey, initialVector } = await cryptographyService.encrypt(base64);
 
-const cipherText = Base64Util.convertStreamToBase64(cipher);
+const cipherBase64 = Base64Util.convertStreamToBase64(cipher);
+const encryptionKeyBase64 = Base64Util.convertStreamToBase64(encryptionKey);
+const initialVectorBase64 = Base64Util.convertStreamToBase64(initialVector);
 
-console.log('Cipher: ', cipherText);
-console.log('Encryption key: ', encryptionKey);
-console.log('IV: ', initialVector);
+console.log('Cipher: ', cipherBase64);
+console.log('Encryption key: ', encryptionKeyBase64);
+console.log('IV: ', initialVectorBase64);
+
+/*
+ * Decryption
+ */
+const encryptionKeyBuffer = Base64Util.convertBase64ToStream(encryptionKeyBase64);
+
+const cryptoKey = await cryptographyService.parseKey(encryptionKeyBuffer);
+
+const cipherBuffer = Base64Util.convertBase64ToStream(cipherBase64);
+const initialVectorBuffer = Base64Util.convertBase64ToStream<Uint8Array>(initialVectorBase64);
+
+const message = await cryptographyService.decrypt(cipherBuffer, cryptoKey, initialVectorBuffer);
+
+console.log('Message: ', message);

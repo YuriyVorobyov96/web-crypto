@@ -25,7 +25,7 @@ export default class CryptographyService<
 
   public async encrypt(data: string): Promise<IEncryptionPayload> {
     const initialVector = this.generateInitialVector();
-    const algorithm = { ...this.algorithm, initialVector };
+    const algorithm = { ...this.algorithm, iv: initialVector };
     const cryptoKey = await this.generateKey();
 
     const encoded = TextOperationsUtil.encode(data);

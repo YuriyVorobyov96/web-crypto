@@ -37,7 +37,7 @@ export default class CryptographyService<
   }
 
   public async decrypt(cipher: ArrayBuffer, key: CryptoKey, initialVector: Uint8Array): Promise<String> {
-    const algorithm = { ...this.algorithm, initialVector };
+    const algorithm = { ...this.algorithm, iv: initialVector };
 
     const encoded = await window.crypto.subtle.decrypt(algorithm, key, cipher);
 
